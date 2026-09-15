@@ -10,360 +10,321 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/white.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@500;700;900&display=swap" rel="stylesheet">
   <!-- QRCode.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 
   <style>
     :root {
-      --primary: #0284c7;        /* 活力天空藍 */
+      --primary: #0284c7;
       --primary-dark: #0369a1;
-      --accent: #e11d48;         /* 警示亮紅 */
-      --accent-soft: #ffe4e6;
-      --warn: #d97706;           /* 注意警示琥珀金 */
-      --warn-soft: #fef3c7;
-      --success: #059669;        /* 健康翠綠 */
-      --success-soft: #d1fae5;
-      --text-main: #0f172a;      /* 深藍黑，清晰高對比 */
-      --text-muted: #475569;     /* 次要說明文字 */
-      --card-bg: #ffffff;        /* 純白卡片 */
-      --card-shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
-      --card-border: #e2e8f0;
+      --accent: #e11d48;
+      --warn: #d97706;
+      --success: #059669;
+      --text-main: #0f172a;
+      --text-sub: #334155;
+      --card-bg: #ffffff;
+      --card-border: #cbd5e1;
     }
+
+    * { box-sizing: border-box; }
 
     body {
       background: #f1f5f9;
-      font-family: 'Noto Sans TC', 'Segoe UI', sans-serif;
+      font-family: 'Noto Sans TC', sans-serif;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
     }
 
     .reveal {
-      font-family: 'Noto Sans TC', 'Segoe UI', sans-serif;
+      font-family: 'Noto Sans TC', sans-serif;
       color: var(--text-main);
       background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #f1f5f9 100%);
     }
 
-    /* 標題設定：字體大幅加大、高對比 */
-    .reveal h1 {
-      font-size: 2.3em !important;
-      font-weight: 900 !important;
-      color: #0f172a !important;
-      line-height: 1.25 !important;
-      margin-bottom: 0.2em !important;
+    /* 投影片內部容器最大化且不溢出 */
+    .reveal .slides section {
+      padding: 10px 20px !important;
+      height: 100% !important;
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: center !important;
+      box-sizing: border-box !important;
     }
 
-    .reveal h2 {
-      font-size: 1.65em !important;
-      font-weight: 800 !important;
-      color: var(--primary-dark) !important;
-      margin-bottom: 0.35em !important;
-      letter-spacing: -0.01em;
+    /* 頂部標題與徽章精簡垂直空間 */
+    .slide-header {
+      margin-bottom: 14px;
+      text-align: left;
     }
 
-    .reveal .progress {
-      color: var(--primary);
-      height: 6px;
-    }
-
-    /* 頂部主題徽章：大字體、圓潤活潑 */
     .top-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
+      display: inline-block;
+      padding: 4px 14px;
+      border-radius: 20px;
+      font-size: 19px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
       background: #e0f2fe;
       color: #0369a1;
       border: 1px solid #bae6fd;
-      padding: 8px 22px;
-      border-radius: 40px;
-      font-size: 0.52em;
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      margin-bottom: 0.6em;
-      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.12);
+      margin-bottom: 6px;
     }
 
-    .top-badge.red {
-      background: var(--accent-soft);
-      color: #be123c;
-      border-color: #fecdd3;
+    .top-badge.red { background: #ffe4e6; color: #be123c; border-color: #fecdd3; }
+    .top-badge.warn { background: #fef3c7; color: #b45309; border-color: #fde68a; }
+    .top-badge.green { background: #d1fae5; color: #047857; border-color: #a7f3d0; }
+
+    .slide-title {
+      font-size: 34px !important;
+      font-weight: 900 !important;
+      color: #0f172a !important;
+      margin: 0 !important;
+      line-height: 1.25 !important;
     }
 
-    .top-badge.green {
-      background: var(--success-soft);
-      color: #047857;
-      border-color: #a7f3d0;
+    .slide-title.red { color: #be123c !important; }
+    .slide-title.warn { color: #b45309 !important; }
+    .slide-title.green { color: #047857 !important; }
+
+    /* 左右雙欄佈局（徹底解決影片與文字擠在一起看不到的問題） */
+    .split-layout {
+      display: grid;
+      grid-template-columns: 1.35fr 1fr;
+      gap: 22px;
+      align-items: stretch;
+      width: 100%;
     }
 
-    .top-badge.warn {
-      background: var(--warn-soft);
-      color: #b45309;
-      border-color: #fde68a;
-    }
-
-    /* 視頻展示大卡片 */
-    .video-card {
-      background: var(--card-bg);
+    /* 左欄：影片卡片 */
+    .video-box {
+      background: #ffffff;
       border: 2px solid var(--card-border);
-      border-radius: 20px;
-      padding: 16px;
-      box-shadow: var(--card-shadow);
-      max-width: 960px;
-      margin: 0 auto;
+      border-radius: 16px;
+      padding: 10px;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
 
-    .video-wrapper {
+    .video-container {
       position: relative;
-      padding-bottom: 48%; /* 寬螢幕黃金比例 */
+      width: 100%;
       height: 0;
+      padding-bottom: 56.25%; /* 標準 16:9 */
+      border-radius: 10px;
       overflow: hidden;
-      border-radius: 14px;
       background: #000;
     }
 
-    .video-wrapper iframe {
+    .video-container iframe {
       position: absolute;
-      top: 0;
-      left: 0;
+      inset: 0;
       width: 100%;
       height: 100%;
       border: none;
     }
 
-    .video-caption {
-      margin-top: 14px;
+    .video-footer {
+      margin-top: 10px;
       display: flex;
-      justify-content: space-between;
-      align-items: center;
+      justify-content: flex-end;
+    }
+
+    /* 右欄：教學核心卡片（字體大、對比高、不溢出） */
+    .points-box {
+      background: #ffffff;
+      border: 2px solid var(--card-border);
+      border-radius: 16px;
+      padding: 20px 22px;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
       gap: 16px;
-    }
-
-    .caption-points {
       text-align: left;
-      font-size: 0.54em; /* 大字體 */
-      line-height: 1.6;
-      color: #334155;
     }
 
-    .caption-points strong {
+    .point-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 23px;
+      line-height: 1.55;
+      color: var(--text-sub);
+    }
+
+    .point-item .icon {
+      font-size: 28px;
+      line-height: 1;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .point-item strong {
       color: #0f172a;
+      font-weight: 800;
       background: #fef08a;
-      padding: 2px 6px;
+      padding: 1px 6px;
       border-radius: 4px;
     }
 
-    /* 播放連結按鈕 */
+    .alert-tag {
+      background: #fff1f2;
+      border-left: 5px solid #e11d48;
+      padding: 10px 14px;
+      border-radius: 6px;
+      font-size: 21px;
+      line-height: 1.5;
+      color: #9f1239;
+      font-weight: 700;
+    }
+
+    .alert-tag.blue { background: #eff6ff; border-left-color: #0284c7; color: #0369a1; }
+    .alert-tag.warn { background: #fffbeb; border-left-color: #d97706; color: #92400e; }
+    .alert-tag.green { background: #ecfdf5; border-left-color: #059669; color: #065f46; }
+
+    /* 按鈕樣式 */
     .btn-action {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      gap: 6px;
+      background: var(--primary);
       color: #ffffff !important;
-      font-size: 0.5em; /* 大字體 */
+      font-size: 19px;
       font-weight: 700;
-      padding: 12px 22px;
-      border-radius: 12px;
+      padding: 9px 18px;
+      border-radius: 8px;
       text-decoration: none;
-      white-space: nowrap;
-      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
-      transition: all 0.2s ease;
-      cursor: pointer;
+      transition: all 0.2s;
     }
 
     .btn-action:hover {
+      background: var(--primary-dark);
       transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(2, 132, 199, 0.45);
     }
 
-    .btn-action.red {
-      background: linear-gradient(135deg, #e11d48, #be123c);
-      box-shadow: 0 4px 14px rgba(225, 29, 72, 0.35);
-    }
-
-    .btn-action.green {
-      background: linear-gradient(135deg, #059669, #047857);
-      box-shadow: 0 4px 14px rgba(5, 150, 105, 0.35);
-    }
-
-    /* 溫和警示橫幅 */
-    .alert-banner {
-      background: #fff1f2;
-      border-left: 6px solid #e11d48;
-      border-radius: 10px;
-      padding: 10px 18px;
-      text-align: left;
-      margin-bottom: 12px;
-      font-size: 0.52em;
-      line-height: 1.55;
-      color: #9f1239;
-      font-weight: 600;
-    }
-
-    .alert-banner.blue {
-      background: #eff6ff;
-      border-left-color: #2563eb;
-      color: #1e40af;
-    }
-
-    .alert-banner.amber {
-      background: #fffbeb;
-      border-left-color: #d97706;
-      color: #92400e;
-    }
-
-    /* 資訊卡片 Grid */
-    .card-grid-2 {
+    /* 雙欄 / 三欄資訊卡片（針對第7頁、第10頁） */
+    .grid-2 {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 20px;
-      margin-top: 0.8em;
+      width: 100%;
       text-align: left;
     }
 
-    .card-grid-3 {
+    .grid-3 {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
       gap: 18px;
-      margin-top: 0.8em;
+      width: 100%;
       text-align: left;
     }
 
-    .info-card {
-      background: var(--card-bg);
+    .card {
+      background: #ffffff;
       border: 2px solid var(--card-border);
       border-radius: 16px;
-      padding: 22px;
-      box-shadow: var(--card-shadow);
-      position: relative;
+      padding: 20px;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
     }
 
-    .info-card.red {
-      border-top: 6px solid var(--accent);
-    }
+    .card.red { border-top: 6px solid var(--accent); }
+    .card.green { border-top: 6px solid var(--success); }
+    .card.blue { border-top: 6px solid var(--primary); }
+    .card.warn { border-top: 6px solid var(--warn); }
 
-    .info-card.blue {
-      border-top: 6px solid var(--primary);
-    }
-
-    .info-card.green {
-      border-top: 6px solid var(--success);
-    }
-
-    .info-card.amber {
-      border-top: 6px solid var(--warn);
-    }
-
-    .info-card-header {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 12px;
-    }
-
-    .info-card-icon {
-      font-size: 1.8em;
-      line-height: 1;
-    }
-
-    .info-card-title {
-      font-size: 0.65em; /* 大字體 */
+    .card-title {
+      font-size: 26px;
       font-weight: 800;
       color: #0f172a;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
-    .info-card-desc {
-      font-size: 0.52em; /* 大字體 */
+    .card-body {
+      font-size: 22px;
+      line-height: 1.65;
       color: #334155;
-      line-height: 1.7;
     }
-
-    .tag-pill {
-      display: inline-block;
-      padding: 3px 10px;
-      border-radius: 20px;
-      font-size: 0.8em;
-      font-weight: 700;
-      margin-top: 8px;
-    }
-
-    .tag-pill.red { background: #ffe4e6; color: #be123c; }
-    .tag-pill.amber { background: #fef3c7; color: #b45309; }
-    .tag-pill.green { background: #d1fae5; color: #047857; }
 
     /* QR Code 卡片 */
     .qr-card {
-      background: var(--card-bg);
+      background: #ffffff;
       border: 2px solid var(--card-border);
       border-radius: 16px;
-      padding: 18px;
+      padding: 16px;
       text-align: center;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: space-between;
-      box-shadow: var(--card-shadow);
-    }
-
-    .qr-container {
-      background: #ffffff;
-      padding: 8px;
-      border-radius: 12px;
-      display: inline-block;
-      border: 2px solid #e2e8f0;
-      margin: 10px 0;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
     }
 
     .qr-title {
-      font-size: 0.58em; /* 大字體 */
+      font-size: 23px;
       font-weight: 800;
       color: #0f172a;
+      margin-bottom: 4px;
     }
 
     .qr-desc {
-      font-size: 0.44em;
+      font-size: 18px;
       color: #64748b;
       margin-bottom: 6px;
     }
 
-    /* 課堂提示欄 */
+    .qr-box {
+      background: #ffffff;
+      padding: 8px;
+      border-radius: 10px;
+      border: 2px solid #e2e8f0;
+      margin: 8px 0;
+    }
+
+    /* 操作提示 */
     .keyboard-hint {
       position: fixed;
-      bottom: 14px;
-      left: 20px;
-      font-size: 14px;
-      font-weight: 600;
-      color: #475569;
+      bottom: 12px;
+      left: 18px;
+      font-size: 15px;
+      font-weight: 700;
+      color: #334155;
       z-index: 100;
-      letter-spacing: 0.5px;
-      background: rgba(255, 255, 255, 0.9);
+      background: rgba(255, 255, 255, 0.95);
       padding: 6px 18px;
       border-radius: 30px;
-      backdrop-filter: blur(8px);
-      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
       border: 1px solid #cbd5e1;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     }
   </style>
 </head>
 <body>
 
-<div class="keyboard-hint">⌨️ 課堂快捷鍵：[空白鍵 / 箭頭鍵] 切換投影片（自動暫停前頁影片） ｜ [F] 全螢幕 ｜ [ESC] 總覽</div>
+<div class="keyboard-hint">⌨️ 快捷操作：[空白鍵 / 箭頭] 切換（自動停前頁影片） ｜ [F] 全螢幕 ｜ [ESC] 總覽</div>
 
 <div class="reveal">
   <div class="slides">
 
     <!-- ==================== SLIDE 1: 封面 ==================== -->
     <section>
-      <div style="text-align: center; padding: 30px 0;">
+      <div style="text-align: center; max-width: 1000px; margin: 0 auto;">
         <div class="top-badge">
-          <span>🛡️ 臺南市 115 年度防制學生藥物濫用校園宣講實施計畫</span>
+          🛡️ 臺南市 115 年度防制學生藥物濫用校園宣講實施計畫
         </div>
-        <h1 style="margin-top: 0.3em;">
-          拒毒防衛隊 <br>
-          <span style="color: var(--primary);">校園健康好夥伴</span>
+        <h1 style="font-size: 56px !important; margin: 20px 0 10px 0 !important; color: #0f172a !important;">
+          拒毒防衛隊 · <span style="color: var(--primary);">校園健康好夥伴</span>
         </h1>
-        <p style="font-size: 0.75em; color: #475569; font-weight: 700; margin-top: 0.6em;">
-          學會辨識陷阱 · 守護身體健康 · 攜手營造美好校園
+        <p style="font-size: 28px; color: #475569; font-weight: 700; margin-bottom: 35px;">
+          學會辨識偽裝陷阱 · 遠離誘惑 · 守護純淨美好校園
         </p>
-        <div style="margin-top: 2.2em; font-size: 0.55em; color: #334155; display: flex; justify-content: center; gap: 36px; font-weight: 600;">
-          <span>🏫 <strong>宣導學校</strong>：臺南市新營區新進國民小學</span>
+        <div style="background: #ffffff; border: 2px solid #cbd5e1; border-radius: 14px; padding: 18px 30px; display: inline-flex; gap: 50px; font-size: 24px; font-weight: 700; color: #1e293b; box-shadow: 0 8px 24px rgba(0,0,0,0.05);">
+          <span>🏫 <strong>承辦學校</strong>：臺南市新營區新進國民小學</span>
           <span>🎒 <strong>學習對象</strong>：五年級、六年級全體同學</span>
         </div>
       </div>
@@ -371,244 +332,328 @@
 
     <!-- ==================== SLIDE 2: 官方影音 ①：新興毒品辨別術 ==================== -->
     <section>
-      <div class="top-badge">
-        <span>🎬 官方宣導影音 ① · 臺南市政府毒防中心</span>
+      <div class="slide-header">
+        <span class="top-badge">🎬 官方宣導影音 ① · 臺南市政府毒防中心</span>
+        <h2 class="slide-title">新興毒品偽裝術：小心「糖衣陷阱」</h2>
       </div>
-      <h2>新興毒品辨識技巧：小心偽裝包裝</h2>
 
-      <div class="video-card">
-        <div class="video-wrapper">
-          <iframe 
-            src="https://www.youtube-nocookie.com/embed/k5GkIaRUlsM?rel=0&modestbranding=1&enablejsapi=1" 
-            title="反毒宣導短片—如何辨別新興毒品" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-            allowfullscreen>
-          </iframe>
-        </div>
-        <div class="video-caption">
-          <div class="caption-points">
-            <div>🍭 <strong>常見偽裝</strong>：做成類似咖啡包、果凍、跳跳糖、貼紙等零食外觀。</div>
-            <div>🔍 <strong>辨別特徵</strong>：包裝粗糙無合格標示、封口有二度壓痕、來源不明。</div>
-            <div>🛡️ <strong>自保守則</strong>：不拿取、不拆開、不食用，第一時間告訴老師或家長！</div>
+      <div class="split-layout">
+        <!-- 左欄：大畫面影片 -->
+        <div class="video-box">
+          <div class="video-container">
+            <iframe 
+              src="https://www.youtube-nocookie.com/embed/k5GkIaRUlsM?rel=0&modestbranding=1&enablejsapi=1" 
+              title="反毒宣導短片—如何辨別新興毒品" 
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+              allowfullscreen>
+            </iframe>
           </div>
-          <a class="btn-action" href="https://www.youtube.com/watch?v=k5GkIaRUlsM" target="_blank" rel="noopener">
-            ↗ 另開大螢幕播放
-          </a>
+          <div class="video-footer">
+            <a class="btn-action" href="https://www.youtube.com/watch?v=k5GkIaRUlsM" target="_blank" rel="noopener">
+              ↗ 另開大螢幕播放
+            </a>
+          </div>
+        </div>
+
+        <!-- 右欄：核心重點 -->
+        <div class="points-box">
+          <div class="alert-tag warn">
+            ⚠️ <strong>特別警惕</strong>：毒品常偽裝成常見零食包裝！
+          </div>
+          <div class="point-item">
+            <span class="icon">🍭</span>
+            <div><strong>常見外觀</strong>：偽裝成咖啡包、彩虹糖、果凍、跳跳糖、毒貼紙。</div>
+          </div>
+          <div class="point-item">
+            <span class="icon">🔍</span>
+            <div><strong>辨識破綻</strong>：包裝印刷粗糙、封口有二度壓痕折痕、來路不明。</div>
+          </div>
+          <div class="point-item">
+            <span class="icon">🛡️</span>
+            <div><strong>自保三不</strong>：<strong>不拿取、不拆封、不食用</strong>，並立即報告師長！</div>
+          </div>
         </div>
       </div>
     </section>
 
     <!-- ==================== SLIDE 3: 官方影音 ②：教育部微電影《毒糖果，滾開!》 ==================== -->
     <section>
-      <div class="top-badge">
-        <span>🎬 官方宣導影音 ② · 教育部「我的未來我作主」競賽作品</span>
+      <div class="slide-header">
+        <span class="top-badge">🎬 官方宣導影音 ② · 教育部「我的未來我作主」作品</span>
+        <h2 class="slide-title">校園警惕微電影：《毒糖果，滾開!》</h2>
       </div>
-      <h2>校園警惕微電影：《毒糖果，滾開!》</h2>
 
-      <div class="video-card">
-        <div class="alert-banner blue">
-          💡 <strong>故事小提醒</strong>：同學拿出號稱吃了很厲害的「萬能糖果」，結果卻造成身體不適送醫！請大家務必提高警覺！
-        </div>
-        <div class="video-wrapper">
-          <iframe 
-            src="https://www.youtube-nocookie.com/embed/Ydw9sa7XW9c?rel=0&modestbranding=1&enablejsapi=1" 
-            title="教育部微電影：毒糖果，滾開!" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-            allowfullscreen>
-          </iframe>
-        </div>
-        <div class="video-caption">
-          <div class="caption-points">
-            <div>⚠️ <strong>健康危害</strong>：吃下來路不明的食品，會引發頭暈、嘔吐甚至危害生命健康！</div>
-            <div>✋ <strong>拒絕技巧</strong>：就算是熟人給的奇怪零食，也要堅定拒絕，保護自己！</div>
+      <div class="split-layout">
+        <div class="video-box">
+          <div class="video-container">
+            <iframe 
+              src="https://www.youtube-nocookie.com/embed/Ydw9sa7XW9c?rel=0&modestbranding=1&enablejsapi=1" 
+              title="教育部微電影：毒糖果，滾開!" 
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+              allowfullscreen>
+            </iframe>
           </div>
-          <a class="btn-action" href="https://www.youtube.com/watch?v=Ydw9sa7XW9c" target="_blank" rel="noopener">
-            ↗ 另開大螢幕播放
-          </a>
+          <div class="video-footer">
+            <a class="btn-action" href="https://www.youtube.com/watch?v=Ydw9sa7XW9c" target="_blank" rel="noopener">
+              ↗ 另開大螢幕播放
+            </a>
+          </div>
+        </div>
+
+        <div class="points-box">
+          <div class="alert-tag blue">
+            💡 <strong>故事小借鏡</strong>：號稱吃了會變聰明的「萬能糖果」是真的嗎？
+          </div>
+          <div class="point-item">
+            <span class="icon">🚑</span>
+            <div><strong>危害健康</strong>：誤食來路不明的糖果，會導致嚴重頭暈、胸痛甚至緊急送醫！</div>
+          </div>
+          <div class="point-item">
+            <span class="icon">✋</span>
+            <div><strong>勇敢拒絕</strong>：就算熟人或親戚說是「特別好料」，只要來源不明都要堅決說不！</div>
+          </div>
+          <div class="point-item">
+            <span class="icon">🤝</span>
+            <div><strong>保護同學</strong>：發現同學拿到奇怪糖果，主動關心並提醒老師。</div>
+          </div>
         </div>
       </div>
     </section>
 
     <!-- ==================== SLIDE 4: 官方影音 ③：依托咪酯（更新版） ==================== -->
     <section>
-      <div class="top-badge red">
-        <span>⚠️ 官方宣導影音 ③ · 行政院最新重要公告</span>
+      <div class="slide-header">
+        <span class="top-badge red">⚠️ 官方宣導影音 ③ · 行政院最新重要法規</span>
+        <h2 class="slide-title red">有害物質重創大腦：依托咪酯（全面禁止電子煙）</h2>
       </div>
-      <h2 style="color: #be123c;">認識有害物質：依托咪酯（全面禁止電子煙）</h2>
 
-      <div class="video-card">
-        <div class="alert-banner">
-          📢 <strong>重要法規宣導</strong>：政府已正式將<strong>「依托咪酯」列為一級毒品嚴格管制</strong>！任何電子煙均違法且嚴重傷害身體，絕對不可嘗試！
-        </div>
-        <div class="video-wrapper">
-          <iframe 
-            src="https://www.youtube-nocookie.com/embed/6cwthmcb8EE?rel=0&modestbranding=1&enablejsapi=1" 
-            title="反毒宣導短片—依托咪酯（更新版）" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-            allowfullscreen>
-          </iframe>
-        </div>
-        <div class="video-caption">
-          <div class="caption-points">
-            <div>🧠 <strong>神經重創</strong>：依托咪酯會損害大腦與中樞神經，造成全身不由自主顫抖抽搐。</div>
-            <div>🚫 <strong>校園防護</strong>：學校全面禁止攜帶或使用任何電子煙與煙品，共同守護校園空氣清淨！</div>
+      <div class="split-layout">
+        <div class="video-box">
+          <div class="video-container">
+            <iframe 
+              src="https://www.youtube-nocookie.com/embed/6cwthmcb8EE?rel=0&modestbranding=1&enablejsapi=1" 
+              title="反毒宣導短片—依托咪酯（更新版）" 
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+              allowfullscreen>
+            </iframe>
           </div>
-          <a class="btn-action red" href="https://www.youtube.com/watch?v=6cwthmcb8EE" target="_blank" rel="noopener">
-            ↗ 另開大螢幕播放
-          </a>
+          <div class="video-footer">
+            <a class="btn-action" style="background:#be123c;" href="https://www.youtube.com/watch?v=6cwthmcb8EE" target="_blank" rel="noopener">
+              ↗ 另開大螢幕播放
+            </a>
+          </div>
+        </div>
+
+        <div class="points-box">
+          <div class="alert-tag">
+            📢 <strong>重磅法規</strong>：政府已正式公告<strong>「依托咪酯」列為一級毒品管制</strong>！
+          </div>
+          <div class="point-item">
+            <span class="icon">🧠</span>
+            <div><strong>神經失控</strong>：吸入含有依托咪酯的煙油，會造成大腦意識混亂、全身不受控抽搐！</div>
+          </div>
+          <div class="point-item">
+            <span class="icon">🚫</span>
+            <div><strong>校園禁令</strong>：電子煙成分不明且有害，<strong>全面禁止帶入校園</strong>！</div>
+          </div>
+          <div class="point-item">
+            <span class="icon">🛡️</span>
+            <div><strong>珍惜生命</strong>：千萬不可因為好奇而碰觸任何煙品或不明煙彈！</div>
+          </div>
         </div>
       </div>
     </section>
 
     <!-- ==================== SLIDE 5: 官方影音 ④：教育部微電影《藥命的誘惑》 ==================== -->
     <section>
-      <div class="top-badge warn">
-        <span>🎬 官方宣導影音 ④ · 教育部防制藥物濫用宣導微電影</span>
+      <div class="slide-header">
+        <span class="top-badge warn">🎬 官方宣導影音 ④ · 教育部防制藥物濫用微電影</span>
+        <h2 class="slide-title warn">同儕相處與面對誘惑：《藥命的誘惑》</h2>
       </div>
-      <h2 style="color: #b45309;">同儕相處與拒絕誘惑：《藥命的誘惑》</h2>
 
-      <div class="video-card">
-        <div class="alert-banner amber">
-          🤝 <strong>健康交友小提醒</strong>：真正的朋友會珍惜你的健康，絕不會拿不明煙品或藥物誘惑你！
-        </div>
-        <div class="video-wrapper">
-          <iframe 
-            src="https://www.youtube-nocookie.com/embed/DuqGXL_hm_Y?rel=0&modestbranding=1&enablejsapi=1" 
-            title="教育部防制學生藥物濫用：藥命的誘惑（精華版）" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-            allowfullscreen>
-          </iframe>
-        </div>
-        <div class="video-caption">
-          <div class="caption-points">
-            <div>🚶‍♂️ <strong>勇敢說不</strong>：面對不良誘惑或起鬨，隨時運用藉故離開法、堅定拒絕法。</div>
-            <div>⚖️ <strong>守法自律</strong>：吸食或持有管制毒品會觸犯法律，毀掉大好未來！</div>
+      <div class="split-layout">
+        <div class="video-box">
+          <div class="video-container">
+            <iframe 
+              src="https://www.youtube-nocookie.com/embed/DuqGXL_hm_Y?rel=0&modestbranding=1&enablejsapi=1" 
+              title="教育部防制學生藥物濫用：藥命的誘惑（精華版）" 
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+              allowfullscreen>
+            </iframe>
           </div>
-          <a class="btn-action" style="background: linear-gradient(135deg, #d97706, #b45309);" href="https://www.youtube.com/watch?v=DuqGXL_hm_Y" target="_blank" rel="noopener">
-            ↗ 另開大螢幕播放
-          </a>
+          <div class="video-footer">
+            <a class="btn-action" style="background:#b45309;" href="https://www.youtube.com/watch?v=DuqGXL_hm_Y" target="_blank" rel="noopener">
+              ↗ 另開大螢幕播放
+            </a>
+          </div>
+        </div>
+
+        <div class="points-box">
+          <div class="alert-tag warn">
+            🤝 <strong>健康交友守則</strong>：真正的朋友會保護你，不會拉你冒險！
+          </div>
+          <div class="point-item">
+            <span class="icon">🚗</span>
+            <div><strong>後悔莫及</strong>：誤吸不肖學長提供的煙油，造成神智不清闖大禍、觸犯法律！</div>
+          </div>
+          <div class="point-item">
+            <span class="icon">🏃</span>
+            <div><strong>見招拆招</strong>：面對「吸一口沒關係」的慫恿，堅定拒絕並找藉口迅速離開！</div>
+          </div>
+          <div class="point-item">
+            <span class="icon">🌟</span>
+            <div><strong>守法自律</strong>：珍惜自己的健康與美好前途，不讓父母師長擔憂。</div>
+          </div>
         </div>
       </div>
     </section>
 
     <!-- ==================== SLIDE 6: 官方影音 ⑤：臺南宮廟藝陣繞境街訪 ==================== -->
     <section>
-      <div class="top-badge green">
-        <span>🎬 官方宣導影音 ⑤ · 臺南市政府毒品危害防制中心</span>
+      <div class="slide-header">
+        <span class="top-badge green">🎬 官方宣導影音 ⑤ · 臺南市政府毒防中心</span>
+        <h2 class="slide-title green">反毒作伙來：臺南宮廟藝陣繞境街訪</h2>
       </div>
-      <h2 style="color: #047857;">反毒作伙來：臺南宮廟藝陣繞境街訪</h2>
 
-      <div class="video-card">
-        <div class="video-wrapper">
-          <iframe 
-            src="https://www.youtube-nocookie.com/embed/Mu8rbqiXjW8?rel=0&modestbranding=1&enablejsapi=1" 
-            title="【反毒作伙來x臺南宮廟藝陣】繞境街訪" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-            allowfullscreen>
-          </iframe>
-        </div>
-        <div class="video-caption">
-          <div class="caption-points">
-            <div>🏮 <strong>正向民俗</strong>：傳統廟會活動充滿文化內涵，藝陣夥伴大聲疾呼共同拒絕毒品！</div>
-            <div>🏡 <strong>放學平安歸</strong>：下課準時回家，不逗留在宮廟神壇或複雜場所，避免不良分子藉故接觸。</div>
+      <div class="split-layout">
+        <div class="video-box">
+          <div class="video-container">
+            <iframe 
+              src="https://www.youtube-nocookie.com/embed/Mu8rbqiXjW8?rel=0&modestbranding=1&enablejsapi=1" 
+              title="【反毒作伙來x臺南宮廟藝陣】繞境街訪" 
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+              allowfullscreen>
+            </iframe>
           </div>
-          <a class="btn-action green" href="https://www.youtube.com/watch?v=Mu8rbqiXjW8" target="_blank" rel="noopener">
-            ↗ 另開大螢幕播放
-          </a>
+          <div class="video-footer">
+            <a class="btn-action" style="background:#047857;" href="https://www.youtube.com/watch?v=Mu8rbqiXjW8" target="_blank" rel="noopener">
+              ↗ 另開大螢幕播放
+            </a>
+          </div>
+        </div>
+
+        <div class="points-box">
+          <div class="alert-tag green">
+            🏮 <strong>傳承正氣</strong>：傳統廟會傳遞文化，藝陣夥伴齊心拒毒！
+          </div>
+          <div class="point-item">
+            <span class="icon">🎁</span>
+            <div><strong>防範黑手誘餌</strong>：警惕少數不肖團體用「免費請吃喝、送遊戲點數」吸引學生。</div>
+          </div>
+          <div class="point-item">
+            <span class="icon">🏡</span>
+            <div><strong>放學平安回家</strong>：下課準時回家，不逗留在神壇或複雜場所。</div>
+          </div>
+          <div class="point-item">
+            <span class="icon">👮</span>
+            <div><strong>警政校園聯防</strong>：若遇到校外人士糾纏或恐嚇，立刻報告學校與派出所！</div>
+          </div>
         </div>
       </div>
     </section>
 
     <!-- ==================== SLIDE 7: 防護重點：拒當運毒「小蜜蜂」 ==================== -->
     <section>
-      <div class="top-badge warn">
-        <span>⚠️ 重要自我防護觀念 · 保護自身安全</span>
-      </div>
-      <h2 style="color: #b45309;">拒絕跑腿陷阱：不做運送不明物品的「小蜜蜂」</h2>
-
-      <div class="alert-banner amber">
-        📌 <strong>重要叮嚀</strong>：不法分子可能利用學童年紀小、戒心低，以「跑腿買飲料、給小費」為藉口，要求幫忙拿不明紙袋或包包！
+      <div class="slide-header">
+        <span class="top-badge warn">⚠️ 重要防護觀念 · 保護自身安全</span>
+        <h2 class="slide-title warn">拒絕跑腿陷阱：不做運送不明物品的「小蜜蜂」</h2>
       </div>
 
-      <div class="card-grid-2">
-        <div class="info-card red">
-          <div class="info-card-header">
-            <span class="info-card-icon">🎒</span>
-            <div class="info-card-title">常見的利誘說法（千萬別上當！）</div>
+      <div class="grid-2" style="margin-top: 10px;">
+        <div class="card red">
+          <div class="card-title">
+            <span>🎒</span> 常見的利誘陷阱（千萬別上當！）
           </div>
-          <div class="info-card-desc">
-            • <em>「小朋友，幫哥哥把這個紙袋拿給對面超商門口的人，這500元給你買點心！」</em><br>
-            • <em>「這只是普通中藥或茶葉，放你書包幫忙帶一下就好。」</em><br>
-            • <strong>事實真相</strong>：裡面往往藏有非法毒品！只要經手運送就可能觸法受罰！
+          <div class="card-body">
+            • <em>「小朋友，幫忙把這個紙袋拿到對面超商給人，500元給你買點心！」</em><br>
+            • <em>「這只是普通茶葉中藥，放你書包幫忙帶一下就好。」</em><br><br>
+            ⚠️ <strong>事實真相</strong>：不肖分子常利用學童年幼無知幫忙運毒！只要代拿代送，就可能面臨司法調查與處分！
           </div>
-          <span class="tag-pill red">高度危險陷阱</span>
         </div>
 
-        <div class="info-card green">
-          <div class="info-card-header">
-            <span class="info-card-icon">🛡️</span>
-            <div class="info-card-title">保護自己的「三不原則」</div>
+        <div class="card green">
+          <div class="card-title">
+            <span>🛡️</span> 保護自己的「三不原則」
           </div>
-          <div class="info-card-desc">
-            1. <strong>不代收</strong>：絕不替任何陌生人或校外人士代收不明包裹。<br>
-            2. <strong>不代送</strong>：絕不幫任何人拿紙袋、背包跑腿送東西。<br>
-            3. <strong>速通報</strong>：遇到有人請你送東西，記下特徵立刻報告老師與家長！
+          <div class="card-body">
+            1. <strong>不代收</strong>：絕不替任何陌生人或校外朋友代收不明包裹。<br><br>
+            2. <strong>不代送</strong>：絕不幫任何人拿紙袋、背包跑腿送東西。<br><br>
+            3. <strong>速通報</strong>：遇到有人要求送貨，記下對方長相立刻告訴老師與家長！
           </div>
-          <span class="tag-pill green">保護自己安全</span>
         </div>
       </div>
     </section>
 
     <!-- ==================== SLIDE 8: 官方影音 ⑥：愛從家庭出發 ==================== -->
     <section>
-      <div class="top-badge">
-        <span>🎬 官方宣導影音 ⑥ · 臺南市政府毒品危害防制中心</span>
+      <div class="slide-header">
+        <span class="top-badge">🎬 官方宣導影音 ⑥ · 臺南市政府毒防中心</span>
+        <h2 class="slide-title">溫馨動畫短片：愛從家庭出發，毒防中心伴您行</h2>
       </div>
-      <h2>溫馨動畫：愛從家庭出發，毒防中心伴您行</h2>
 
-      <div class="video-card">
-        <div class="video-wrapper">
-          <iframe 
-            src="https://www.youtube-nocookie.com/embed/s4N2eqxRJDE?rel=0&modestbranding=1&enablejsapi=1" 
-            title="愛從家庭出發~毒防中心伴您行" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-            allowfullscreen>
-          </iframe>
-        </div>
-        <div class="video-caption">
-          <div class="caption-points">
-            <div>🏡 <strong>家庭溫暖</strong>：家長與家人的關心陪伴，是每位同學健康成長最堅強的後盾！</div>
-            <div>🤝 <strong>專業諮詢</strong>：若身邊親友遇到藥物困擾，毒防中心有專業諮詢老師隨時提供協助。</div>
+      <div class="split-layout">
+        <div class="video-box">
+          <div class="video-container">
+            <iframe 
+              src="https://www.youtube-nocookie.com/embed/s4N2eqxRJDE?rel=0&modestbranding=1&enablejsapi=1" 
+              title="愛從家庭出發~毒防中心伴您行" 
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+              allowfullscreen>
+            </iframe>
           </div>
-          <a class="btn-action" href="https://www.youtube.com/watch?v=s4N2eqxRJDE" target="_blank" rel="noopener">
-            ↗ 另開大螢幕播放
-          </a>
+          <div class="video-footer">
+            <a class="btn-action" href="https://www.youtube.com/watch?v=s4N2eqxRJDE" target="_blank" rel="noopener">
+              ↗ 另開大螢幕播放
+            </a>
+          </div>
+        </div>
+
+        <div class="points-box">
+          <div class="alert-tag blue">
+            ❤️ <strong>溫暖力量</strong>：家人的支持與關懷，是孩子最堅固的堡壘！
+          </div>
+          <div class="point-item">
+            <span class="icon">🏡</span>
+            <div><strong>多與家人談心</strong>：在學校或生活遇到困惑，主動向家長與老師傾訴。</div>
+          </div>
+          <div class="point-item">
+            <span class="icon">🤝</span>
+            <div><strong>尋求專業協助</strong>：毒防中心有專業社工與諮詢人員，隨時陪伴大家。</div>
+          </div>
+          <div class="point-item">
+            <span class="icon">🌈</span>
+            <div><strong>迎向陽光健康</strong>：養成規律運動與正當休閒習慣，活力滿分！</div>
+          </div>
         </div>
       </div>
     </section>
 
     <!-- ==================== SLIDE 9: 線上特展與線上學習營 ==================== -->
     <section>
-      <div class="top-badge">
-        <span>🌐 數位學習探索 · 官方線上互動資源</span>
+      <div class="slide-header">
+        <span class="top-badge">🌐 數位學習探索 · 官方線上互動資源</span>
+        <h2 class="slide-title">科博館「視.反毒特展」與線上學習營</h2>
       </div>
-      <h2>科博館「視.反毒特展」與線上學習營</h2>
 
-      <div class="card-grid-2" style="margin-top: 1em;">
+      <div class="grid-2" style="margin-top: 10px;">
         <div class="qr-card">
-          <div class="qr-title">國立自然科學博物館<br>「視.反毒特展」</div>
-          <div class="qr-desc">教育部 × 科博館 3D 虛擬互動探索展間</div>
-          <div class="qr-container" id="qr-vision"></div>
-          <a class="btn-action" style="margin-top: 8px;" href="https://antidrug.nmns.edu.tw/vision/" target="_blank" rel="noopener">
+          <div>
+            <div class="qr-title">國立自然科學博物館「視.反毒特展」</div>
+            <div class="qr-desc">教育部 × 科博館 3D 虛擬互動特展間</div>
+          </div>
+          <div class="qr-box" id="qr-vision"></div>
+          <a class="btn-action" href="https://antidrug.nmns.edu.tw/vision/" target="_blank" rel="noopener">
             🌐 進入 3D 線上展間
           </a>
         </div>
 
         <div class="qr-card">
-          <div class="qr-title">臺南市政府毒防中心<br>線上學習營</div>
-          <div class="qr-desc">反毒闖關遊戲、知識小測驗與互動教材</div>
-          <div class="qr-container" id="qr-learning"></div>
-          <a class="btn-action" style="margin-top: 8px;" href="https://reurl.cc/70OYVD" target="_blank" rel="noopener">
+          <div>
+            <div class="qr-title">臺南市政府毒防中心 線上學習營</div>
+            <div class="qr-desc">反毒闖關小任務、知識測驗與互動教材</div>
+          </div>
+          <div class="qr-box" id="qr-learning"></div>
+          <a class="btn-action" href="https://reurl.cc/70OYVD" target="_blank" rel="noopener">
             🎯 進入線上學習營
           </a>
         </div>
@@ -617,43 +662,47 @@
 
     <!-- ==================== SLIDE 10: 求助網絡與專線 ==================== -->
     <section>
-      <div class="top-badge green">
-        <span>🤝 隨時求助 · 守護網絡就在身邊</span>
+      <div class="slide-header">
+        <span class="top-badge green">🤝 隨時求助 · 守護網絡就在身邊</span>
+        <h2 class="slide-title green">你的健康守護神：毒防指南針與求助資源</h2>
       </div>
-      <h2 style="color: #047857;">你的健康守門員：毒防指南針與求助資源</h2>
 
-      <div class="card-grid-3" style="margin-top: 0.8em;">
-        <div class="qr-card" style="border-top: 5px solid #10b981;">
-          <div class="qr-title" style="color: #047857;">LINE@ 臺南毒防指南針</div>
-          <div class="qr-desc">官方帳號 ID: <strong>@0800770885tainan</strong></div>
-          <div class="qr-container" id="qr-line"></div>
-          <div style="font-size: 0.44em; color: #475569; margin-top: 4px; font-weight: 600;">
-            掃描加好友 · 即時專業諮詢
+      <div class="grid-3" style="margin-top: 10px;">
+        <div class="qr-card" style="border-top: 6px solid #10b981;">
+          <div>
+            <div class="qr-title" style="color:#047857;">LINE@ 臺南毒防指南針</div>
+            <div class="qr-desc">官方 ID: <strong>@0800770885tainan</strong></div>
           </div>
+          <div class="qr-box" id="qr-line"></div>
+          <div style="font-size: 19px; color: #475569; font-weight: 700;">掃描加好友 · 專人即時諮詢</div>
         </div>
 
-        <div class="qr-card" style="border-top: 5px solid var(--primary);">
-          <div class="qr-title" style="color: var(--primary-dark);">臺南市教育局<br>藥物濫用資源網</div>
-          <div class="qr-desc">最新校園宣導成果與教材</div>
-          <div class="qr-container" id="qr-tn-sdap"></div>
-          <a class="btn-action" style="margin-top: 4px; font-size: 0.44em; padding: 6px 14px;" href="https://sdap.tn.edu.tw/Index.html" target="_blank" rel="noopener">
+        <div class="qr-card" style="border-top: 6px solid var(--primary);">
+          <div>
+            <div class="qr-title" style="color:var(--primary-dark);">臺南市教育局 資源網</div>
+            <div class="qr-desc">校園宣導成果與最新教材</div>
+          </div>
+          <div class="qr-box" id="qr-tn-sdap"></div>
+          <a class="btn-action" style="font-size:18px; padding:6px 14px;" href="https://sdap.tn.edu.tw/Index.html" target="_blank" rel="noopener">
             進入網站
           </a>
         </div>
 
-        <div class="qr-card" style="border-top: 5px solid var(--warn);">
-          <div class="qr-title" style="color: #b45309;">教育部<br>防制藥物濫用資源網</div>
-          <div class="qr-desc">全國反毒影音、教案百科庫</div>
-          <div class="qr-container" id="qr-moe-enc"></div>
-          <a class="btn-action" style="margin-top: 4px; font-size: 0.44em; padding: 6px 14px; background: linear-gradient(135deg, #d97706, #b45309);" href="https://enc.moe.edu.tw/home" target="_blank" rel="noopener">
+        <div class="qr-card" style="border-top: 6px solid var(--warn);">
+          <div>
+            <div class="qr-title" style="color:#b45309;">教育部 藥物濫用資源網</div>
+            <div class="qr-desc">全國反毒影音、教案百科庫</div>
+          </div>
+          <div class="qr-box" id="qr-moe-enc"></div>
+          <a class="btn-action" style="background:#b45309; font-size:18px; padding:6px 14px;" href="https://enc.moe.edu.tw/home" target="_blank" rel="noopener">
             進入網站
           </a>
         </div>
       </div>
 
-      <div style="margin-top: 18px; background: #d1fae5; border: 2px solid #a7f3d0; border-radius: 12px; padding: 12px 20px; font-size: 0.58em; display: flex; justify-content: space-around; align-items: center; color: #065f46; font-weight: 700;">
-        <span>📞 <strong>24小時免付費諮詢專線</strong>：<strong style="color: #047857; font-size: 1.25em;">0800-770-885</strong>（請請你，幫幫我）</span>
-        <span>🏫 <strong>新進國小學務處</strong>：用心守護全校師生健康！</span>
+      <div style="margin-top: 18px; background: #d1fae5; border: 2px solid #a7f3d0; border-radius: 12px; padding: 14px 24px; font-size: 24px; display: flex; justify-content: space-around; align-items: center; color: #065f46; font-weight: 800;">
+        <span>📞 24小時免付費諮詢專線：<strong style="color: #047857; font-size: 32px;">0800-770-885</strong>（請請你，幫幫我）</span>
+        <span>🏫 新進國小學務處：守護全校師生健康！</span>
       </div>
     </section>
 
@@ -663,6 +712,7 @@
 <!-- Reveal.js 核心 JS -->
 <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
 <script>
+  // 初始化 Reveal.js：以 1440x810 寬螢幕畫布為基準，自動等比例適應任何螢幕大小
   Reveal.initialize({
     hash: true,
     transition: 'slide',
@@ -672,32 +722,33 @@
     progress: true,
     controls: true,
     slideNumber: 'c/t',
-    width: 1280,
-    height: 720,
-    margin: 0.05,
+    width: 1440,
+    height: 810,
+    margin: 0.04,
+    minScale: 0.2,
+    maxScale: 2.0,
     plugins: []
   });
 
-  // ★ 切換頁面時，自動停止/暫停前一頁的 YouTube 影片，避免聲音重疊干擾
+  // ★ 換頁時，主動暫停所有非當前頁面的 YouTube 影片，避免聲音重疊干擾
   Reveal.on('slidechanged', function(event) {
     var allIframes = document.querySelectorAll('iframe');
     allIframes.forEach(function(iframe) {
       if (!event.currentSlide.contains(iframe)) {
-        // 發送 YouTube 暫停指令
         iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
       }
     });
   });
 
-  // 動態生成 QR Code
+  // 生成 QR Code
   window.addEventListener('DOMContentLoaded', function() {
     function makeQR(id, text, size) {
       var el = document.getElementById(id);
       if (el) {
         new QRCode(el, {
           text: text,
-          width: size || 110,
-          height: size || 110,
+          width: size || 115,
+          height: size || 115,
           colorDark : "#0f172a",
           colorLight : "#ffffff",
           correctLevel : QRCode.CorrectLevel.M
@@ -705,11 +756,11 @@
       }
     }
 
-    makeQR('qr-vision', 'https://antidrug.nmns.edu.tw/vision/', 110);
-    makeQR('qr-learning', 'https://reurl.cc/70OYVD', 110);
-    makeQR('qr-line', 'https://line.me/R/ti/p/@0800770885tainan', 110);
-    makeQR('qr-tn-sdap', 'https://sdap.tn.edu.tw/Index.html', 100);
-    makeQR('qr-moe-enc', 'https://enc.moe.edu.tw/home', 100);
+    makeQR('qr-vision', 'https://antidrug.nmns.edu.tw/vision/', 115);
+    makeQR('qr-learning', 'https://reurl.cc/70OYVD', 115);
+    makeQR('qr-line', 'https://line.me/R/ti/p/@0800770885tainan', 115);
+    makeQR('qr-tn-sdap', 'https://sdap.tn.edu.tw/Index.html', 105);
+    makeQR('qr-moe-enc', 'https://enc.moe.edu.tw/home', 105);
   });
 </script>
 
